@@ -1,0 +1,29 @@
+from dotenv import load_dotenv
+import requests
+import os
+import json
+
+load_dotenv()
+
+bls_api_key = os.getenv('bls_api_key')
+url = 'https://api.bls.gov/publicAPI/v2/timeseries/data/'
+
+def data_retriever(seriesid, start_year, end_year, catalog, calculations, annualaverage, aspects):
+    if start_year == None or end_year == None:
+        payload_dict = {'seriesid':seriesid, 'catalog':catalog, 'calculations':calculations, 'annualaverage':annualaverage, 'aspects':aspects}
+    else:
+        payload_dict = {'seriesid':seriesid, 'startyear':start_year, 'endyear':end_year, 'catalog':catalog, 'calculations':calculations, 'annualaverage':annualaverage, 'aspects':aspects}
+
+    data = json.dumps(payload_dict)
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(url, data=data, headers=headers)
+    
+    # Check if the request was successful
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {'error': f'Request failed with status code {response.status_code}'}
+
+if __name__=='__main__':
+    data = data_retriever(['CUUR0000SA0L1E'],None,None,True,True,True,True)
+    print(json.dumps(data, indent=4))
