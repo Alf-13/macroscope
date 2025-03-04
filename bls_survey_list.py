@@ -18,4 +18,10 @@ def bls_survey_list():
 
 # Example usage
 if __name__ == "__main__":
-    print(bls_survey_list())
+    survey_list = bls_survey_list()
+    if survey_list and 'Results' in survey_list and 'survey' in survey_list['Results']:
+        surveys = survey_list['Results']['survey']
+        print(survey_list)
+        print(f'There are {len(surveys)} survey elements')
+    else:
+        print("Failed to retrieve or parse survey data")
